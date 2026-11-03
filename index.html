@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="de" data-mode="all" data-input="pointer" data-collapsed="false">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<title>Die Meiose im Überblick</title>
+<style>
+:root {
+  --bg: #F2F2F7;                    /* systemGroupedBackground */
+  --card: #FFFFFF;                  /* secondarySystemGroupedBackground */
+  --tile: #F2F2F7;                  /* tertiarySystemGroupedBackground */
+  --label: #000000;
+  --label-2: rgba(60, 60, 67, 0.78);  /* secondaryLabel, angehoben auf 4,5:1 */
+  --label-3: rgba(60, 60, 67, 0.30);
+  --sep: rgba(60, 60, 67, 0.29);
+  --fill: rgba(120, 120, 128, 0.12);
+  --cell: #FFFFFF;
+  --cell-stroke: #C7C7CC;
+  --mother: #FF3B30;
+  --father: #007AFF;
+  --blue-fill: #0071E3;  --blue-text: #0066CC;
+  --green: #34C759;  --green-text: #1C7031;
+  --teal: #30B0C7;   --teal-text: #006A74;
+  --purple: #AF52DE; --purple-text: #8241A2;
+  --indigo: #5856D6; --indigo-text: #3634A3;
+  --orange: #FF9500; --orange-text: #B52F00;
+  --material: rgba(249, 249, 249, 0.78);
+  --thumb: #FFFFFF;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+  --bg: #000000; --card: #1C1C1E; --tile: #2C2C2E;
+  --label: #FFFFFF; --label-2: rgba(235, 235, 245, 0.66); --label-3: rgba(235, 235, 245, 0.30);
+  --sep: rgba(84, 84, 88, 0.65); --fill: rgba(120, 120, 128, 0.36);
+  --cell: #3A3A3C; --cell-stroke: #636366;
+  --mother: #FF453A; --father: #0A84FF;
+  --blue-fill: #0A6CE0; --blue-text: #409CFF;
+  --green: #30D158;  --green-text: #30DB5B;
+  --teal: #40C8E0;   --teal-text: #5DE6FF;
+  --purple: #BF5AF2; --purple-text: #DA8FFF;
+  --indigo: #5E5CE6; --indigo-text: #A19EFF;
+  --orange: #FF9F0A; --orange-text: #FFB340;
+  --material: rgba(30, 30, 30, 0.78);
+  --thumb: #636366;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #000000; --card: #1C1C1E; --tile: #2C2C2E;
+  --label: #FFFFFF; --label-2: rgba(235, 235, 245, 0.66); --label-3: rgba(235, 235, 245, 0.30);
+  --sep: rgba(84, 84, 88, 0.65); --fill: rgba(120, 120, 128, 0.36);
+  --cell: #3A3A3C; --cell-stroke: #636366;
+  --mother: #FF453A; --father: #0A84FF;
+  --blue-fill: #0A6CE0; --blue-text: #409CFF;
+  --green: #30D158;  --green-text: #30DB5B;
+  --teal: #40C8E0;   --teal-text: #5DE6FF;
+  --purple: #BF5AF2; --purple-text: #DA8FFF;
+  --indigo: #5E5CE6; --indigo-text: #A19EFF;
+  --orange: #FF9F0A; --orange-text: #FFB340;
+  --material: rgba(30, 30, 30, 0.78);
+  --thumb: #636366;
+}
+/* ===== Basis ===== */
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, "Helvetica Neue", Arial, sans-serif;
+  /* Textstile (iOS), fluid für Tafel und Beamer */
+  --fs-large: clamp(2.125rem, 1.4rem + 2.2vw, 3.25rem);
+  --fs-title: clamp(1.375rem, 1rem + 0.9vw, 1.9rem);
+  --fs-head: clamp(1.0625rem, 0.9rem + 0.45vw, 1.4rem);
+  --fs-sub: clamp(0.9375rem, 0.8rem + 0.38vw, 1.2rem);
+  --fs-foot: clamp(0.8125rem, 0.72rem + 0.3vw, 1rem);
+  /* 8-Punkte-Raster */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px;
+  --r-card: 28px; --r-tile: 12px;   /* konzentrisch: 28 - 16 = 12 */
+  --nav-h: 44px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+html { scroll-padding-top: calc(var(--nav-h) + env(safe-area-inset-top, 0px) + var(--s3)); -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--label); font: 400 var(--fs-head)/1.3 var(--font); text-align: left; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; font-variant-numeric: tabular-nums; }
+h1, h2, h3, p, ol, ul { margin: 0; padding: 0; }
+ol, ul { list-style: none; }
+.page { max-width: 1180px; margin: 0 auto; padding: var(--s5) max(var(--s4), env(safe-area-inset-left, 0px)) 48px max(var(--s4), env(safe-area-inset-right, 0px)); display: grid; gap: var(--s4); }
+.page.has-bar { padding-bottom: 136px; }
+
+/* ===== Textstile ===== */
+h1 { font: 700 var(--fs-large)/1.16 var(--font); letter-spacing: 0.011em; }
+h2 { font: 700 var(--fs-title)/1.2 var(--font); letter-spacing: 0.016em; }
+h3, .status .t2, .btn, .frow .v, .navtitle { font: 600 var(--fs-head)/1.25 var(--font); letter-spacing: -0.022em; }
+.kern p { font: 400 var(--fs-head)/1.3 var(--font); letter-spacing: -0.022em; }
+.lead, .card > header p, .tile p, .stat span, .seg span { font: 400 var(--fs-sub)/1.3 var(--font); letter-spacing: -0.016em; }
+.eyebrow, .legend, .colhead p, .chips li, .badge, .flow, .status .t1, .frow .k, .frow .v small, .tag, .fert .lab, .fert .it span, .group > h3.sec { font: 400 var(--fs-foot)/1.35 var(--font); letter-spacing: -0.006em; }
+.stat b, .fert .it b { font: 700 var(--fs-large)/1.05 var(--font); letter-spacing: 0.011em; }
+.fert .it b { font-size: var(--fs-title); line-height: 1.15; letter-spacing: 0.016em; }
+.fert .op { font: 600 var(--fs-title)/1 var(--font); }
+
+/* Dynamic Type auf iPhone und iPad (Safari): Systemtextstile statt fester Größen */
+@media (max-width: 1023px) {
+  @supports (font: -apple-system-large-title) { h1, .stat b { font: -apple-system-large-title; } }
+  @supports (font: -apple-system-title2) { h2, .fert .it b, .fert .op { font: -apple-system-title2; } }
+  @supports (font: -apple-system-headline) { h3, .status .t2, .btn, .frow .v, .navtitle { font: -apple-system-headline; } }
+  @supports (font: -apple-system-body) { .kern p { font: -apple-system-body; } }
+  @supports (font: -apple-system-subheadline) { .lead, .card > header p, .tile p, .stat span, .seg span { font: -apple-system-subheadline; } }
+  @supports (font: -apple-system-footnote) { .eyebrow, .legend, .colhead p, .chips li, .badge, .flow, .status .t1, .frow .k, .frow .v small, .tag, .fert .lab, .fert .it span, .group > h3.sec { font: -apple-system-footnote; } }
+}
+/* Gewichte nach dem Font-Shorthand */
+h1, h2, .stat b, .fert .it b { font-weight: 700; }
+h3, .status .t2, .btn, .frow .v, .navtitle, .seg span, .frow .k, .group > h3.sec { font-weight: 600; }
+.chips li, .tag { font-weight: 500; }
+.badge { font-weight: 700; }
+.frow .k, .group > h3.sec { text-transform: uppercase; letter-spacing: 0.02em; color: var(--label-2); }
+.frow .v small, .frow .v small { font-weight: 400; }
+
+/* ===== Navigationsleiste: Large Title klappt beim Scrollen ein ===== */
+.navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 30; padding: env(safe-area-inset-top, 0px) max(var(--s4), env(safe-area-inset-left, 0px)) 0 max(var(--s4), env(safe-area-inset-right, 0px)); height: calc(var(--nav-h) + env(safe-area-inset-top, 0px)); display: grid; place-items: center; background: var(--material); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); border-bottom: 0.5px solid var(--sep); opacity: 0; visibility: hidden; transition: opacity 200ms var(--ease-out), visibility 0s 200ms; pointer-events: none; }
+[data-collapsed="true"] .navbar { opacity: 1; visibility: visible; transition: opacity 200ms var(--ease-out), visibility 0s; }
+.navtitle { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ===== Kopf ===== */
+.hero { display: grid; gap: var(--s2); padding: var(--s2) var(--s1); }
+.eyebrow { color: var(--label-2); }
+.lead { color: var(--label-2); max-width: 60ch; }
+.hero-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s4); margin-top: var(--s2); }
+.legend { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2) 20px; color: var(--label-2); }
+.legend li { display: inline-flex; align-items: center; gap: var(--s2); }
+.legend svg { width: 22px; height: 22px; flex: none; }
+.dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+
+/* Segmentierte Steuerung: 36 pt sichtbar, 44 pt Trefferfläche */
+.seg { position: relative; display: inline-grid; grid-template-columns: 1fr 1fr; width: min(100%, 380px); background: var(--fill); border-radius: 10px; padding: 2px; }
+.seg .thumb { position: absolute; inset: 2px auto 2px 2px; width: calc(50% - 2px); background: var(--thumb); border-radius: 8px; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12), 0 3px 1px rgba(0, 0, 0, 0.04); transition: transform 220ms var(--ease-in-out); }
+[data-mode="steps"] .seg .thumb { transform: translateX(100%); }
+.seg label { position: relative; display: grid; place-items: center; padding: 0 var(--s3); min-height: 40px; border-radius: 8px; cursor: pointer; }
+.seg label::before { content: ""; position: absolute; inset: -2px 0; }   /* Trefferfläche >= 44 pt */
+.seg input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.seg span { white-space: nowrap; pointer-events: none; color: var(--label); }
+.seg label:has(input:focus-visible) { outline: 3px solid color-mix(in srgb, var(--blue-text) 55%, transparent); outline-offset: 2px; }
+
+/* ===== Karten und Kacheln ===== */
+.card { background: var(--card); border-radius: var(--r-card); padding: var(--s4); display: grid; gap: var(--s3); }
+.card > header { padding: var(--s2) var(--s2) 0; display: grid; gap: var(--s1); }
+.card > header p { color: var(--label-2); max-width: 70ch; }
+.card > header h2 { color: var(--tint-text); }
+.mitose, .reife1 { --tint: var(--green); --tint-text: var(--green-text); }
+.meiose { --tint: var(--indigo); --tint-text: var(--indigo-text); }
+.reife1 { --tint: var(--teal); --tint-text: var(--teal-text); }
+.reife2 { --tint: var(--purple); --tint-text: var(--purple-text); }
+
+.phases { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s3); }
+@media (max-width: 820px) { .phases { grid-template-columns: minmax(0, 1fr); } }
+.tile { position: relative; background: var(--tile); border-radius: var(--r-tile); padding: var(--s3) var(--s4) var(--s4); display: grid; align-content: start; gap: var(--s2); }
+.phases .tile { transition: opacity 250ms var(--ease-out), transform 250ms var(--ease-out), visibility 0s; }
+.phases .tile::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; box-shadow: inset 0 0 0 3px var(--tint); opacity: 0; transition: opacity 200ms var(--ease-out); }
+.tile.is-current::after { opacity: 0.6; }
+.is-hidden { opacity: 0; transform: translateY(8px) scale(0.98); visibility: hidden; pointer-events: none; transition: opacity 150ms var(--ease-out), transform 150ms var(--ease-out), visibility 0s 150ms !important; }
+.badge { position: absolute; top: var(--s3); left: var(--s3); width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: var(--tint-text); background: color-mix(in srgb, var(--tint) 18%, transparent); }
+.tile svg.cellsvg { width: 100%; height: clamp(124px, 13vw, 200px); display: block; }
+.tile p { color: var(--label-2); }
+.chips { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s1); }
+.chips li { line-height: 1; padding: 7px 10px; border-radius: 999px; white-space: nowrap; color: var(--tint-text); background: color-mix(in srgb, var(--tint) 16%, transparent); transition: opacity 250ms var(--ease-out) calc(80ms + var(--i) * 50ms), transform 250ms var(--ease-out) calc(80ms + var(--i) * 50ms); }
+.tile.is-hidden .chips li { opacity: 0; transform: translateY(6px); transition-duration: 120ms; transition-delay: 0ms; }
+.flow { display: flex; align-items: center; justify-content: center; gap: var(--s2); color: var(--label-2); }
+.flow svg { width: 18px; height: 18px; flex: none; }
+
+/* Vergleich */
+.colhead { position: sticky; top: calc(var(--nav-h) + env(safe-area-inset-top, 0px)); z-index: 5; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s3); margin: calc(-1 * var(--s4)) calc(-1 * var(--s4)) 0; padding: var(--s3) var(--s4); background: var(--material); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); border-radius: var(--r-card) var(--r-card) 0 0; border-bottom: 0.5px solid var(--sep); }
+.colhead > div { display: grid; gap: 2px; padding: var(--s1) var(--s2); }
+.colhead h2 { color: var(--tint-text); line-height: 1.15; }
+.colhead p { color: var(--label-2); }
+.group { display: grid; gap: var(--s2); }
+.group > h3.sec { padding: var(--s2) var(--s2) 0; }
+.pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s3); }
+.pair .tile { padding: var(--s3); gap: 6px; }
+.pair .tile svg { width: 100%; display: block; height: clamp(120px, 16vw, 250px); }
+.pair .tile h3 b { color: var(--tint-text); font-weight: 700; }
+.tag { justify-self: start; margin-top: var(--s1); line-height: 1; padding: 7px 10px; border-radius: 999px; color: var(--tint-text); background: color-mix(in srgb, var(--tint) 16%, transparent); }
+.fert { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s3) 20px; padding: var(--s4); background: var(--tile); border-radius: var(--r-tile); }
+.fert .lab { flex-basis: 100%; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; color: var(--label-2); }
+.fert .it { display: grid; gap: 2px; }
+.fert .it span { color: var(--label-2); }
+.fert .it.n b { color: var(--indigo-text); }
+.fert .it.z b { color: var(--green-text); }
+.fert .op { color: var(--label-2); }
+.facts { display: grid; background: var(--tile); border-radius: var(--r-tile); overflow: hidden; }
+.frow { display: grid; grid-template-columns: minmax(120px, 0.8fr) minmax(0, 1fr) minmax(0, 1fr); gap: var(--s3); align-items: center; padding: var(--s3) var(--s4); min-height: 52px; }
+.frow + .frow { border-top: 0.5px solid var(--sep); }
+.frow .v { overflow-wrap: anywhere; hyphens: auto; -webkit-hyphens: auto; }
+.frow .v small { display: block; color: var(--label-2); }
+.frow .v.a { color: var(--green-text); }
+.frow .v.b { color: var(--indigo-text); }
+@media (max-width: 560px) { .frow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .frow .k { grid-column: 1 / -1; } }
+.rise { transition: opacity 300ms var(--ease-out), transform 300ms var(--ease-out); transition-delay: calc(var(--i, 0) * 60ms); }
+.pre .rise { opacity: 0; transform: translateY(8px); }
+
+/* Merke / Kernunterschied */
+.merke, .kern { --tint: var(--orange); --tint-text: var(--orange-text); background: color-mix(in srgb, var(--orange) 14%, var(--card)); }
+.merke { transition: opacity 250ms var(--ease-out), transform 250ms var(--ease-out), visibility 0s; }
+.merke h2, .kern h2 { color: var(--orange-text); }
+.kern h2 { padding: var(--s1) var(--s2) 0; }
+.kern p { padding: 0 var(--s2) var(--s2); max-width: 60ch; }
+.kern p b { font-weight: 600; }
+.eq { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s4) var(--s5); padding: 0 var(--s2) var(--s2); }
+.stat { display: grid; gap: 2px; }
+.stat span { color: var(--label-2); }
+.eq svg { width: 32px; height: 32px; color: var(--orange-text); flex: none; }
+
+/* ===== Symbolleiste unten (Material) ===== */
+.bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; padding: var(--s3) max(var(--s4), env(safe-area-inset-left, 0px)) calc(var(--s3) + env(safe-area-inset-bottom, 0px)) max(var(--s4), env(safe-area-inset-right, 0px)); background: var(--material); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); border-top: 0.5px solid var(--sep); transition: transform 250ms var(--ease-out), opacity 250ms var(--ease-out), visibility 0s; }
+[data-mode="all"] .bar { transform: translateY(100%); opacity: 0; visibility: hidden; pointer-events: none; transition: transform 200ms var(--ease-out), opacity 200ms var(--ease-out), visibility 0s 200ms; }
+.bar-inner { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--s4); }
+.status { display: grid; gap: 6px; min-width: 0; text-align: center; }
+.status .t1 { color: var(--label-2); }
+.status .t2 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.track { height: 4px; border-radius: 999px; background: var(--fill); overflow: hidden; }
+.track i { display: block; height: 100%; background: var(--blue-fill); border-radius: inherit; transform-origin: left center; transform: scaleX(0.14); transition: transform 250ms var(--ease-out); }
+.btn { appearance: none; border: 0; cursor: pointer; font-family: inherit; min-height: 50px; min-width: 104px; padding: 0 22px; border-radius: 999px; transition: transform 160ms var(--ease-out), opacity 160ms var(--ease-out), background-color 160ms ease; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.btn:active { transform: scale(0.97); }
+.btn.primary { background: var(--blue-fill); color: #FFFFFF; }
+.btn.secondary { background: color-mix(in srgb, var(--blue-fill) 14%, transparent); color: var(--blue-text); }
+.btn[aria-disabled="true"] { opacity: 0.35; pointer-events: none; }
+:focus-visible { outline: 3px solid color-mix(in srgb, var(--blue-text) 55%, transparent); outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) {
+  .btn.primary:hover { background: color-mix(in srgb, var(--blue-fill) 88%, #000); }
+  .btn.secondary:hover { background: color-mix(in srgb, var(--blue-fill) 22%, transparent); }
+}
+@media (max-width: 560px) { .bar-inner { grid-template-columns: auto auto; } .status { grid-column: 1 / -1; grid-row: 1; } .btn { min-width: 0; } }
+
+/* Tastatur: nie animieren */
+[data-input="key"] .phases .tile, [data-input="key"] .tile::after, [data-input="key"] .chips li, [data-input="key"] .merke, [data-input="key"] .track i { transition: none !important; }
+
+/* ===== Systemeinstellungen ===== */
+@media (prefers-reduced-motion: reduce) {
+  .is-hidden, .pre .rise { transform: none; }
+  .tile.is-hidden .chips li { transform: none; }
+  .seg .thumb, .track i { transition: none; }
+  .bar, [data-mode="all"] .bar { transform: none; }
+  .btn:active { transform: none; }
+  .rise { transition-duration: 200ms; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  :root { --material: var(--card); }
+  .navbar, .bar, .colhead { -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+@media (prefers-contrast: more) {
+  :root { --label-2: var(--label); --label-3: var(--label); --sep: var(--label); }
+  .card, .tile, .fert, .facts { outline: 1px solid var(--label-3); }
+  .chips li, .tag, .badge { outline: 1px solid currentColor; }
+}
+@supports (corner-shape: squircle) { .card, .tile, .fert, .facts, .btn, .seg, .seg .thumb { corner-shape: squircle; } }
+@media print { .navbar, .bar, .seg { display: none; } body { background: #fff; } }
+
+</style>
+</head>
+<body>
+<noscript><p style="padding:24px;font-family:sans-serif">Diese Seite braucht JavaScript, um die Bilder zu zeichnen.</p></noscript>
+<header class="navbar" aria-hidden="true"><span class="navtitle">Die Meiose im Überblick</span></header>
+<main class="page has-bar">
+  <header class="hero">
+    <p class="eyebrow">Genetik · Jahrgang 10</p>
+    <h1>Die Meiose im Überblick</h1>
+    <p class="lead">Modell mit 2 von 23 Chromosomenpaaren, ohne Crossing-over.</p>
+    <div class="hero-row">
+      <div class="seg" role="radiogroup" aria-label="Ansicht">
+        <span class="thumb" aria-hidden="true"></span>
+        <label><input type="radio" name="mode" value="all" checked><span>Alles</span></label>
+        <label><input type="radio" name="mode" value="steps"><span>Schritt für Schritt</span></label>
+      </div>
+      <ul class="legend" aria-label="Legende">
+        <li><svg viewBox="0 0 22 22" aria-hidden="true"><g stroke="var(--label-2)" stroke-width="3" stroke-linecap="round"><line x1="7" y1="3" x2="15" y2="19"/><line x1="15" y1="3" x2="7" y2="19"/></g></svg>Zwei-Chromatid-Chromosom</li>
+        <li><svg viewBox="0 0 22 22" aria-hidden="true"><line x1="11" y1="3" x2="11" y2="19" stroke="var(--label-2)" stroke-width="3" stroke-linecap="round"/></svg>Ein-Chromatid-Chromosom</li>
+        <li><span class="dot" style="background:var(--mother)"></span>von der Mutter</li>
+        <li><span class="dot" style="background:var(--father)"></span>vom Vater</li>
+      </ul>
+    </div>
+  </header>
+
+  <section class="card reife1" aria-labelledby="h-r1">
+    <header>
+      <h2 id="h-r1">1. Reifeteilung</h2>
+      <p>Homologe Chromosomen werden getrennt. Die Chromosomenzahl sinkt von 46 auf 23 (Reduktionsteilung).</p>
+    </header>
+    <ol class="phases" id="r1"></ol>
+  </section>
+
+  <p class="flow" aria-hidden="true">
+    <svg viewBox="0 0 18 18"><path d="M4 7l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Die beiden Tochterzellen gehen direkt in die 2. Reifeteilung.
+  </p>
+
+  <section class="card reife2" aria-labelledby="h-r2">
+    <header>
+      <h2 id="h-r2">2. Reifeteilung</h2>
+      <p>Chromatiden werden getrennt, wie bei der Mitose.</p>
+    </header>
+    <ol class="phases" id="r2"></ol>
+  </section>
+
+  <section class="card merke" data-step="7" aria-labelledby="h-m">
+    <header><h2 id="h-m">Merke</h2></header>
+    <div class="eq">
+      <div class="stat"><b>1 Zelle</b><span>mit 46 Chromosomen (2n)</span></div>
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 16h20M18 8l8 8-8 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="stat"><b>4 Zellen</b><span>mit je 23 Chromosomen (n)</span></div>
+    </div>
+  </section>
+</main>
+
+<nav class="bar" id="bar" aria-label="Schritte">
+  <div class="bar-inner">
+    <button class="btn secondary" id="prev" type="button">Zurück</button>
+    <div class="status" aria-live="polite">
+      <span class="t1" id="t1">Schritt 1 von 7</span>
+      <span class="t2" id="t2">Metaphase I</span>
+      <span class="track" aria-hidden="true"><i id="fill"></i></span>
+    </div>
+    <button class="btn primary" id="next" type="button">Weiter</button>
+  </div>
+</nav><script>
+(function () {
+  var SIN = Math.sin(22 * Math.PI / 180), COS = Math.cos(22 * Math.PI / 180);
+  var M = "--mother", F = "--father";
+  function X(cx, cy, L, c, w) {
+    var dx = L / 2 * SIN, dy = L / 2 * COS;
+    return '<g stroke="var(' + c + ')" stroke-width="' + w + '" stroke-linecap="round" fill="none"><line x1="' + (cx - dx) + '" y1="' + (cy - dy) + '" x2="' + (cx + dx) + '" y2="' + (cy + dy) + '"/><line x1="' + (cx + dx) + '" y1="' + (cy - dy) + '" x2="' + (cx - dx) + '" y2="' + (cy + dy) + '"/></g>';
+  }
+  function I(cx, cy, L, c, w) {
+    return '<line x1="' + cx + '" y1="' + (cy - L / 2) + '" x2="' + cx + '" y2="' + (cy + L / 2) + '" stroke="var(' + c + ')" stroke-width="' + w + '" stroke-linecap="round"/>';
+  }
+  function cell(cx, cy, r) { return '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="var(--cell)" stroke="var(--cell-stroke)" stroke-width="2.5"/>'; }
+  function eq(x1, x2, y) { return '<line x1="' + x1 + '" y1="' + y + '" x2="' + x2 + '" y2="' + y + '" stroke="var(--label-3)" stroke-width="2" stroke-dasharray="4 5"/>'; }
+  function spindle(xs, y, top, bottom) {
+    var s = "";
+    xs.forEach(function (x) {
+      s += '<line x1="120" y1="' + top + '" x2="' + x + '" y2="' + y + '" stroke="var(--sep)" stroke-width="1.5"/>';
+      s += '<line x1="120" y1="' + bottom + '" x2="' + x + '" y2="' + y + '" stroke="var(--sep)" stroke-width="1.5"/>';
+    });
+    return s;
+  }
+  function arrow(x1, x2, y) {
+    return '<g stroke="var(--label-3)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M' + x1 + ' ' + y + 'H' + x2 + '"/><path d="M' + (x2 - 8) + ' ' + (y - 8) + 'L' + x2 + ' ' + y + 'L' + (x2 - 8) + ' ' + (y + 8) + '"/></g>';
+  }
+  function svg(vb, inner, label, cls) { return '<svg' + (cls ? ' class="' + cls + '"' : '') + ' viewBox="' + vb + '" role="img" aria-label="' + label + '">' + inner + '</svg>'; }
+  function makeTile(p) {
+    var li = document.createElement("li");
+    li.className = "tile"; li.dataset.step = p.n;
+    li.innerHTML = (p.nobadge ? '' : '<span class="badge" aria-hidden="true">' + p.n + '</span>') + p.art() +
+      '<h3>' + p.name + '</h3><p>' + p.txt + '</p><ul class="chips">' +
+      p.chips.map(function (c, i) { return '<li style="--i:' + i + '">' + c + '</li>'; }).join("") + '</ul>';
+    return li;
+  }
+  function svgc(inner, label) { return svg("0 0 240 208", inner, label, "cellsvg"); }
+
+  var phases = [
+    { g: "r1", n: 1, name: "Metaphase I", txt: "Homologe Chromosomen liegen als Paare nebeneinander in der Zellmitte.", chips: ["1 Zelle", "46 Chromosomen", "Zwei-Chromatid"],
+      art: function () { return svgc(cell(120, 104, 82) + spindle([70, 102, 138, 170], 104, 30, 178) + eq(46, 194, 104) +
+        X(70, 104, 62, M, 9) + X(102, 104, 62, F, 9) + X(138, 104, 42, M, 9) + X(170, 104, 42, F, 9), "Metaphase I: zwei Paare homologer Chromosomen liegen paarweise in der Zellmitte"); } },
+    { g: "r1", n: 2, name: "Anaphase I", txt: "Die homologen Chromosomen werden getrennt. Der Zufall entscheidet, wer wohin kommt.", chips: ["1 Zelle", "23 je Pol", "Zwei-Chromatid"],
+      art: function () { return svgc(cell(120, 104, 82) + eq(46, 194, 104) +
+        X(92, 74, 54, M, 9) + X(148, 74, 38, F, 9) + X(92, 134, 54, F, 9) + X(148, 134, 38, M, 9), "Anaphase I: die homologen Chromosomen werden zu entgegengesetzten Polen gezogen"); } },
+    { g: "r1", n: 3, name: "Telophase I", txt: "Die Zelle teilt sich. Zwei haploide Zellen entstehen.", chips: ["2 Zellen", "23 je Zelle", "Zwei-Chromatid"],
+      art: function () { return svgc(cell(120, 54, 46) + cell(120, 154, 46) +
+        X(103, 54, 34, M, 6.5) + X(137, 54, 24, F, 6.5) + X(103, 154, 34, F, 6.5) + X(137, 154, 24, M, 6.5), "Zwei Tochterzellen nach der ersten Reifeteilung, jede mit zwei Zwei-Chromatid-Chromosomen"); } },
+    { g: "r2", n: 4, name: "Metaphase II", txt: "In beiden Zellen liegen die Chromosomen einzeln in der Zellmitte.", chips: ["2 Zellen", "23 je Zelle", "Zwei-Chromatid"],
+      art: function () { return svgc(cell(66, 104, 58) + cell(174, 104, 58) + eq(16, 116, 104) + eq(124, 224, 104) +
+        X(48, 104, 44, M, 8) + X(84, 104, 30, F, 8) + X(156, 104, 44, F, 8) + X(192, 104, 30, M, 8), "Zwei Zellen in der Metaphase II: die Chromosomen liegen einzeln in der Zellmitte"); } },
+    { g: "r2", n: 5, name: "Anaphase II", txt: "Die Chromatiden werden getrennt.", chips: ["2 Zellen", "23 je Pol", "Ein-Chromatid"],
+      art: function () { return svgc(cell(66, 104, 58) + cell(174, 104, 58) + eq(16, 116, 104) + eq(124, 224, 104) +
+        I(48, 80, 30, M, 7) + I(84, 80, 21, F, 7) + I(48, 128, 30, M, 7) + I(84, 128, 21, F, 7) +
+        I(156, 80, 30, F, 7) + I(192, 80, 21, M, 7) + I(156, 128, 30, F, 7) + I(192, 128, 21, M, 7), "Zwei Zellen in der Anaphase II: die Chromatiden werden zu den Polen gezogen"); } },
+    { g: "r2", n: 6, name: "Telophase II", txt: "Beide Zellen teilen sich. Vier haploide Zellen entstehen.", chips: ["4 Zellen", "23 je Zelle", "Ein-Chromatid"],
+      art: function () { return svgc(cell(70, 54, 42) + cell(170, 54, 42) + cell(70, 154, 42) + cell(170, 154, 42) +
+        I(58, 54, 34, M, 7) + I(82, 54, 24, F, 7) + I(158, 54, 34, M, 7) + I(182, 54, 24, F, 7) +
+        I(58, 154, 34, F, 7) + I(82, 154, 24, M, 7) + I(158, 154, 34, F, 7) + I(182, 154, 24, M, 7), "Vier haploide Zellen mit je zwei Ein-Chromatid-Chromosomen"); } }
+  ];
+  var lists = { r1: document.getElementById("r1"), r2: document.getElementById("r2") };
+  phases.forEach(function (p) { lists[p.g].appendChild(makeTile(p)); });
+  var NAMES = ["Metaphase I", "Anaphase I", "Telophase I", "Metaphase II", "Anaphase II", "Telophase II", "Merke"];
+  var root = document.documentElement;
+  var h1 = document.querySelector("h1");
+  if (h1 && "IntersectionObserver" in window) {
+    new IntersectionObserver(function (e) { root.dataset.collapsed = e[0].isIntersecting ? "false" : "true"; },
+      { rootMargin: "-" + (44 + 8) + "px 0px 0px 0px" }).observe(h1);
+  }
+  var tiles = Array.prototype.slice.call(document.querySelectorAll("[data-step]"));
+  var prev = document.getElementById("prev"), next = document.getElementById("next");
+  var t1 = document.getElementById("t1"), t2 = document.getElementById("t2"), fill = document.getElementById("fill");
+  var TOTAL = NAMES.length, step = 1, mode = "all";
+  function render() {
+    root.dataset.mode = mode;
+    tiles.forEach(function (el) {
+      var s = +el.dataset.step;
+      var hidden = mode === "steps" && s > step;
+      el.classList.toggle("is-hidden", hidden);
+      el.classList.toggle("is-current", mode === "steps" && s === step && s < TOTAL);
+      if (hidden) { el.setAttribute("aria-hidden", "true"); el.setAttribute("inert", ""); }
+      else { el.removeAttribute("aria-hidden"); el.removeAttribute("inert"); }
+    });
+    t1.textContent = "Schritt " + step + " von " + TOTAL;
+    t2.textContent = NAMES[step - 1];
+    fill.style.transform = "scaleX(" + (step / TOTAL) + ")";
+    prev.setAttribute("aria-disabled", step === 1 ? "true" : "false");
+    next.textContent = step === TOTAL ? "Von vorn" : "Weiter";
+  }
+  function go(d, viaKey) {
+    root.dataset.input = viaKey ? "key" : "pointer";
+    if (step === TOTAL && d > 0) step = 1; else step = Math.min(TOTAL, Math.max(1, step + d));
+    render();
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="mode"]'), function (r) {
+    r.addEventListener("change", function () { root.dataset.input = "pointer"; mode = r.value; if (mode === "steps") step = 1; render(); });
+  });
+  prev.addEventListener("click", function () { if (step > 1) go(-1, false); });
+  next.addEventListener("click", function () { go(1, false); });
+  document.addEventListener("keydown", function (e) {
+    if (mode !== "steps") return;
+    var t = e.target;
+    if (t && (t.closest(".seg") || t.tagName === "BUTTON")) return;
+    if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") { e.preventDefault(); go(1, true); }
+    else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); go(-1, true); }
+  });
+  render();
+})();
+</script>
+</body>
+</html>
